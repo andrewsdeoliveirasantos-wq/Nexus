@@ -1,0 +1,61 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidTransaction(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.description is string && data.description.size() <= 300 &&
+             data.amount is number && data.amount >= 0 &&
+             (data.type == 'income' || data.type == 'expense') &&
+             data.category is string && data.category.size() <= 100 &&
+             data.date is string && data.date.size() <= 20 &&
+             data.paymentMethod is string && data.paymentMethod.size() <= 50 &&
+             (data.status == 'completed' || data.status == 'pending');
+    }
+
+    function isValidCommitment(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.title is string && data.title.size() <= 300 &&
+             (data.type == 'emergency' || data.type == 'appointment' || data.type == 'task') &&
+             (data.priority == 'urgent' || data.priority == 'high' || data.priority == 'normal' || data.priority == 'low') &&
+             data.date is string && data.date.size() <= 20 &&
+             data.completed is bool;
+    }
+
+    function isValidGoal(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.title is string && data.title.size() <= 300 &&
+             (data.timeframe == 'weekly' || data.timeframe == 'monthly' || data.timeframe == 'yearly') &&
+             data.completed is bool;
+    }
+
+    match /transactions/{transactionId} {
+      allow get: if isValidId(transactionId);
+      allow list: if true;
+      allow create, update: if isValidId(transactionId) && isValidTransaction(request.resource.data);
+      allow delete: if isValidId(transactionId);
+    }
+
+    match /commitments/{commitmentId} {
+      allow get: if isValidId(commitmentId);
+      allow list: if true;
+      allow create, update: if isValidId(commitmentId) && isValidCommitment(request.resource.data);
+      allow delete: if isValidId(commitmentId);
+    }
+
+    match /goals/{goalId} {
+      allow get: if isValidId(goalId);
+      allow list: if true;
+      allow create, update: if isValidId(goalId) && isValidGoal(request.resource.data);
+      allow delete: if isValidId(goalId);
+    }
+  }
+}

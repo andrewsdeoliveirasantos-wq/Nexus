@@ -1,0 +1,6 @@
+{
+  "name": "NEXUS",
+  "description": "NEXUS • couple finance & life management. Aplicativo para organizar finanças de casal, cartões de crédito, relatórios mensais, metas de economia e agenda compartilhada.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

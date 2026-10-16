@@ -1,0 +1,81 @@
+{
+  "entities": {
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Financial transaction for household members Andrews and Rayssa",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "description": { "type": "string", "maxLength": 300 },
+        "amount": { "type": "number" },
+        "type": { "type": "string", "enum": ["income", "expense"] },
+        "category": { "type": "string", "maxLength": 100 },
+        "date": { "type": "string", "maxLength": 20 },
+        "paymentMethod": { "type": "string", "maxLength": 50 },
+        "status": { "type": "string", "enum": ["completed", "pending"] },
+        "notes": { "type": "string", "maxLength": 500 },
+        "member": { "type": "string", "enum": ["andrews", "rayssa", "both"] },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "description", "amount", "type", "category", "date", "paymentMethod", "status"]
+    },
+    "DailyCommitment": {
+      "title": "DailyCommitment",
+      "description": "Daily commitment, appointment or urgent aid note for Andrews or Rayssa",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 300 },
+        "type": { "type": "string", "enum": ["emergency", "appointment", "task"] },
+        "priority": { "type": "string", "enum": ["urgent", "high", "normal", "low"] },
+        "date": { "type": "string", "maxLength": 20 },
+        "time": { "type": "string", "maxLength": 10 },
+        "completed": { "type": "boolean" },
+        "completedAt": { "type": "string", "maxLength": 50 },
+        "notes": { "type": "string", "maxLength": 500 },
+        "member": { "type": "string", "enum": ["andrews", "rayssa", "both"] },
+        "soundEnabled": { "type": "boolean" },
+        "location": { "type": "string", "maxLength": 200 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "title", "type", "priority", "date", "completed"]
+    },
+    "GoalItem": {
+      "title": "GoalItem",
+      "description": "Weekly, monthly or yearly goals and objectives for Andrews and Rayssa",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 300 },
+        "timeframe": { "type": "string", "enum": ["weekly", "monthly", "yearly"] },
+        "category": { "type": "string", "maxLength": 100 },
+        "targetMonth": { "type": "string", "maxLength": 20 },
+        "targetYear": { "type": "number" },
+        "targetDate": { "type": "string", "maxLength": 20 },
+        "targetAmount": { "type": "number" },
+        "savedAmount": { "type": "number" },
+        "completed": { "type": "boolean" },
+        "completedAt": { "type": "string", "maxLength": 50 },
+        "member": { "type": "string", "enum": ["andrews", "rayssa", "both"] },
+        "priority": { "type": "string", "enum": ["urgent", "high", "normal", "low"] },
+        "notes": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "title", "timeframe", "completed"]
+    }
+  },
+  "firestore": {
+    "/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Household transactions shared in real-time between Andrews and Rayssa"
+    },
+    "/commitments/{commitmentId}": {
+      "schema": "DailyCommitment",
+      "description": "Daily commitments and emergencies shared in real-time between Andrews and Rayssa"
+    },
+    "/goals/{goalId}": {
+      "schema": "GoalItem",
+      "description": "Weekly, monthly and yearly goals shared in real-time between Andrews and Rayssa"
+    }
+  }
+}
